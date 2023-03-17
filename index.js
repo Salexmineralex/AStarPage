@@ -120,8 +120,8 @@ async function searchbestRoute()
                 {
                     open_nodes.push(grid[rows][colums]);
                 }
-
-                if(parseInt(Math.abs(possibledir[index][0]))+parseInt(Math.abs(possibledir[index][1]) == 2))
+              
+                if(Math.abs(possibledir[index][0])+Math.abs(possibledir[index][1]) == 2)
                 {
 
                     grid[rows][colums].updateCost(14,currentNode.cost,currentNode);
