@@ -9,7 +9,7 @@ var closed_nodes = [];
 
 var possibledir = [[0,1],[1,1],[1,0],[1,-1],[-1,1],[-1,-1],[0,-1],[-1,0]];
 
-var grid = new Array(7);
+var grid = new Array(15);
 
 class Node {
     constructor(cost, parent,column,row) {
@@ -61,7 +61,8 @@ function compare( a, b ) {
     }
     return 0;
   }
-
+  
+ 
 
 
 function createMatrix()
@@ -71,7 +72,7 @@ function createMatrix()
 
     for (let i = 0; i < grid.length; i++) 
     {
-        grid[i] = new Array(7);
+        grid[i] = new Array(15);
         for (let j = 0; j < grid[i].length; j++) 
         {
             grid[i][j] = new Node(999,null,j,i);
@@ -85,9 +86,9 @@ function createMatrix()
 
 createMatrix();
 // createTable([["row 1, cell 1", "row 1, cell 2"], ["row 2, cell 1", "row 2, cell 2"]])
+const timer = ms => new Promise(res => setTimeout(res, ms));
 
-
-function searchbestRoute()
+async function searchbestRoute()
 {
     var currentNode = start;
     var searching = true;
@@ -137,8 +138,10 @@ function searchbestRoute()
     if(searching)
     {
         open_nodes.sort(compare);
+        await timer(50);
         currentNode.closed = true;
         currentNode = open_nodes[0];
+        document.getElementsByClassName(currentNode.row+"/"+currentNode.column)[0].style.background ="#a18594"
         open_nodes.shift();
     }
    
@@ -148,14 +151,19 @@ function searchbestRoute()
    while(currentNode.parent != null)
    {
     document.getElementsByClassName(currentNode.row+"/"+currentNode.column)[0].style.background ="#FDFD96";
+    document.getElementsByClassName(currentNode.row+"/"+currentNode.column)[0].classList.add("scale-up-center");
     currentNode = currentNode.parent;
+    await timer(100);
    }
+
+   document.getElementsByClassName(start.row+"/"+start.column)[0].style.background ="#ff6961";
    
 
 }
 
 function createTable(tableData) {
     var table = document.createElement('table');
+    table.classList.add("mytable");
     var tableBody = document.createElement('tbody');
   
     tableData.forEach(function(rowData) {
@@ -169,15 +177,29 @@ function createTable(tableData) {
             
             switch (document.querySelector('input[name="select"]:checked').value) {
                 case "Start":
+                        // if( document.getElementsByClassName("start")[0] != null)
+                        // {
+                        //     document.getElementsByClassName("start")[0].style.background = "#A8D1D1";
+                        //     document.getElementsByClassName("start")[0].classList.remove("start");
+                        //     document.getElementsByClassName("start")[0].cellData.cost = 999;
+                        // }
+                      
                         this.style.background = "#ff6961"
+                        this.classList.add("start")
                         start = cellData;
                         start.cost = 0;
                      
                     break;
 
                 case "Goal":
+                        if( document.getElementsByClassName("goal")[0] != null)
+                        {
+                            document.getElementsByClassName("goal")[0].style.background = "#A8D1D1";
+                            document.getElementsByClassName("goal")[0].classList.remove("goal");
+                        }
                         this.style.background = "#77dd77"
                         goal = cellData;
+                        this.classList.add("goal")
                         goal.closed = false;
                     break;
 
@@ -192,7 +214,6 @@ function createTable(tableData) {
             
         };
         cell.classList.add("rcorners1");
-        cell.appendChild(document.createTextNode(cellData.row+"/"+cellData.column));
         row.appendChild(cell);
       });
   
@@ -200,9 +221,6 @@ function createTable(tableData) {
     });
     
     table.appendChild(tableBody);
-    table.style.maxWidth = "50vw";
-    table.style.maxHeight = "50vh";
-    table.style.display = "block"
-    document.body.appendChild(table);
+    document.getElementById("matrix").appendChild(table);
   }
   
